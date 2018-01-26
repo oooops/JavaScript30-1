@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>JS Drum Kit</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 
@@ -58,8 +60,45 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
   <script>
+    // 选择所有class=key的元素
+    const keys = document.querySelectorAll('.key');
 
+    // 键盘按下的函数
+    function playSound(e) {
+      // 选择 audio中的data-key和按键相同的标签
+      const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+      // 选择div中和data-key相同的标签,可以用div也可以用.key来筛选
+      const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
+      // 如果点击事件没有对应元素,返回
+      if (!audio) {
+        return;
+      }
+      // 设置每次点击时,音频的时间跳跃在哪个位置,单位是秒
+      // 类似播放时点击进度条在哪个时间
+      audio.currentTime = 0;
+      audio.play();
+      // 给点击事件对应的div绑定动画
+      key.classList.add("playing");
+    }
+
+    // 声明移除动画函数
+    function remove(e) {
+      // 因为变化动画是事件最长,所以以他为结束标志
+      if (e.propertyName !== 'transform') {
+        return;
+      }
+      e.target.classList.remove('playing');
+      // 也可以使用this,this由调用的所决定,因为是遍历的keys调用,所以此处的this就是拥有动画的div
+      // this.classList.remove('playing');
+    }
+    // 绑定按下事件
+    window.addEventListener('keydown', playSound);
+    // 遍历每个元素,绑定事件
+    keys.forEach(key => {
+      key.addEventListener('transitionend', remove);
+    })
   </script>
 
 </body>
+
 </html>
