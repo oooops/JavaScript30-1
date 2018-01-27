@@ -85,9 +85,9 @@
       let date = new Date();
       console.log(date)
       // 获取当前秒数和分钟等
-      let sec = date.getSeconds();
-      let min = date.getMinutes();
-      let hour = date.getHours();
+      const sec = date.getSeconds();
+      const min = date.getMinutes();
+      const hour = date.getHours();
       // 当指针到0的时候会跳一下,此时将动画时间设置为0,其他时间设置为0.1s
       if (sec === 0) {
         // 秒针
