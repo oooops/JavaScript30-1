@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
 </head>
+
 <body>
-  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+  <h2>Update CSS Variables with
+    <span class='hl'>JS</span>
+  </h2>
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
@@ -21,6 +25,21 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .hl {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -43,12 +62,30 @@
     }
 
     input {
-      width:100px;
+      width: 100px;
     }
   </style>
 
   <script>
+    // 获取input的nodelist
+    const input = document.querySelectorAll('.controls input');
+    // 获取改变的值
+    function inputChange() {
+      // 用dataset来访问自定义属性
+      // 如果用sizing(单位)属性就用,没有就为空
+      const suffix = this.dataset.sizing || '';
+      // 用 document.documentElement代表根元素,可以修改根元素的--base等
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+    }
+    // 给每个input绑定事件
+    input.forEach(i => {
+      // 改变时触发
+      i.addEventListener('change', inputChange);
+      // 鼠标移动时触发
+      i.addEventListener('mousemove', inputChange);
+    })
   </script>
 
 </body>
+
 </html>
