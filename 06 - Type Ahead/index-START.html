@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Type Ahead 👀</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
   <form class="search-form">
@@ -14,9 +16,44 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  <script>
+    const endpoint =
+      'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    const search = document.querySelector('.search')
+    const sugg = document.querySelector('.suggestions')
+    const city = []
+    search.addEventListener('change', change)
+    search.addEventListener('keyup', change)
 
-</script>
-  </body>
+    fetch(endpoint).then(res => {
+      return res.json();
+    }).then(data => {
+      city.push(...data);
+    })
+
+    function change() {
+      const res = matchs(this.value);
+      const html = res.map(i => {
+        const reg = new RegExp(this.value, 'gi');
+        const cityname = i.city.replace(reg, `<span class="hl">${this.value}</span>`);
+        const statename = i.state.replace(reg, `<span class="hl">${this.value}</span>`);
+        return `
+        <li>
+          <span class="name">${cityname}, ${statename}</span>
+          <span class="population">${(i.population.toString())}</span>
+        </li>
+        `;
+      }).join('')
+      sugg.innerHTML = html;
+    }
+
+    function matchs(data) {
+      return city.filter(i => {
+        const reg = new RegExp(data, 'gi');
+        return i.city.match(reg) || i.state.match(reg);
+      })
+    }
+  </script>
+</body>
+
 </html>
